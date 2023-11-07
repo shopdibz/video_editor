@@ -188,7 +188,7 @@ class VideoFFmpegVideoEditorConfig extends FFmpegVideoEditorConfig {
           ? commandBuilder!(this, "\'$videoPath\'", "\'$outputPath\'")
           // use -y option to overwrite the output
           // use -c copy if there is not filters to avoid re-encoding the video and speedup the process
-          : "$startTrimCmd -i \'$videoPath\' $toTrimCmd ${filtersCmd(filters)} $gifCmd ${filters.isEmpty ? '-c copy' : ''} -y \'$outputPath\'",
+          : "-hwaccel auto $startTrimCmd -i \'$videoPath\' $toTrimCmd ${filtersCmd(filters)} $gifCmd ${filters.isEmpty ? '-c copy' : ''} -y \'$outputPath\'",
       outputPath: outputPath,
     );
   }
@@ -253,7 +253,7 @@ class CoverFFmpegVideoEditorConfig extends FFmpegVideoEditorConfig {
       command: commandBuilder != null
           ? commandBuilder!(this, "\'$coverPath\'", "\'$outputPath\'")
           // use -y option to overwrite the output
-          : "-i \'$coverPath\' ${filtersCmd(filters)} -y \'$outputPath\'",
+          : "-hwaccel auto -i \'$coverPath\' ${filtersCmd(filters)} -y \'$outputPath\'",
       outputPath: outputPath,
     );
   }
