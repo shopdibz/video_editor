@@ -183,14 +183,25 @@ class VideoFFmpegVideoEditorConfig extends FFmpegVideoEditorConfig {
         await getOutputPath(filePath: videoPath, format: format);
     final List<String> filters = getExportFilters();
 
-    return FFmpegVideoEditorExecute(
-      command: commandBuilder != null
+    try {
+      return FFmpegVideoEditorExecute(
+        command: commandBuilder != null
           ? commandBuilder!(this, "\'$videoPath\'", "\'$outputPath\'")
           // use -y option to overwrite the output
           // use -c copy if there is not filters to avoid re-encoding the video and speedup the process
           : "-hwaccel auto $startTrimCmd -i \'$videoPath\' $toTrimCmd ${filtersCmd(filters)} $gifCmd ${filters.isEmpty ? '-c copy' : ''} -y \'$outputPath\'",
-      outputPath: outputPath,
-    );
+        outputPath: outputPath,
+      );
+    } catch(e) {
+      return FFmpegVideoEditorExecute(
+        command: commandBuilder != null
+          ? commandBuilder!(this, "\'$videoPath\'", "\'$outputPath\'")
+          // use -y option to overwrite the output
+          // use -c copy if there is not filters to avoid re-encoding the video and speedup the process
+          : "$startTrimCmd -i \'$videoPath\' $toTrimCmd ${filtersCmd(filters)} $gifCmd ${filters.isEmpty ? '-c copy' : ''} -y \'$outputPath\'",
+        outputPath: outputPath,
+      );
+    }
   }
 }
 
