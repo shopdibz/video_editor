@@ -260,12 +260,22 @@ class CoverFFmpegVideoEditorConfig extends FFmpegVideoEditorConfig {
         await getOutputPath(filePath: coverPath, format: format);
     final List<String> filters = getExportFilters();
 
-    return FFmpegVideoEditorExecute(
-      command: commandBuilder != null
+    try {
+      return FFmpegVideoEditorExecute(
+        command: commandBuilder != null
           ? commandBuilder!(this, "\'$coverPath\'", "\'$outputPath\'")
           // use -y option to overwrite the output
           : "-hwaccel auto -i \'$coverPath\' ${filtersCmd(filters)} -y \'$outputPath\'",
-      outputPath: outputPath,
-    );
+        outputPath: outputPath,
+      );
+    } catch(e) {
+      return FFmpegVideoEditorExecute(
+        command: commandBuilder != null
+          ? commandBuilder!(this, "\'$coverPath\'", "\'$outputPath\'")
+          // use -y option to overwrite the output
+          : "-i \'$coverPath\' ${filtersCmd(filters)} -y \'$outputPath\'",
+        outputPath: outputPath,
+      );
+    }
   }
 }
